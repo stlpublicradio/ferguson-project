@@ -41,6 +41,30 @@ def test_widget():
     """
     return render_template('test_widget.html', **make_context())
 
+@app.route('/date.html')
+def date_page():
+    """
+    Example page displaying widget at different embed sizes.
+    """
+    context = make_context()
+
+    with open('data/featured.json') as f:
+        context['featured'] = json.load(f)
+    
+    return render_template('date.html', **context)
+
+@app.route('/topic.html')
+def date_page():
+    """
+    Example page displaying widget at different embed sizes.
+    """
+    context = make_context()
+
+    with open('data/featured.json') as f:
+        context['featured'] = json.load(f)
+    
+    return render_template('topic.html', **context)
+
 app.register_blueprint(static.static)
 
 # Boilerplate

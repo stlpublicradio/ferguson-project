@@ -34,6 +34,18 @@
 
 <h2>JST example</h2>
 <p id="template-example"></p>
+
+{% for yeargroup in COPY.stories|groupby('year') %}
+{% for monthgroup in yeargroup.list|groupby('month') %}
+{% for daygroup in monthgroup.list|groupby('day') %}
+<h2>{{ monthgroup.grouper }}/{{ daygroup.grouper }}</h2>
+{% for story in daygroup.list %}
+<p><a href="{{ story.url }}">{{ story.headline }}</a></p>
+{% endfor %}
+{% endfor %}
+{% endfor %}
+
+{% endfor %}
 {% endblock %}
 
 
@@ -45,3 +57,5 @@
     </div>
 </div>
 {% endblock %}
+
+{% include '_share_modal.html' %}
