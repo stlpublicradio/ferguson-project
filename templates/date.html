@@ -40,7 +40,7 @@
 {% for daygroup in monthgroup.list|groupby('day') %}
 <h2>{{ monthgroup.grouper }}/{{ daygroup.grouper }}</h2>
 {% for story in daygroup.list %}
-<p><a href="{{ story.url }}">{{ story.headline }}</a></p>
+<p><a href="{{ story.url }}" target="_parent">{{ story.headline }}</a></p>
 {% endfor %}
 {% endfor %}
 {% endfor %}

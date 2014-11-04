@@ -1,1 +1,19 @@
 // widget-specific css
+
+@import "less/typography";
+@import "less/variables";
+
+a {
+	&:link {
+		text-decoration: none;
+		color: @stlpr-red;
+	}
+	
+	&:visited {
+		color: lighten(@stlpr-red, 40%);
+	}
+}
+
+.date {
+	color: #666;
+}
