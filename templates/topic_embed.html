@@ -14,86 +14,173 @@
     {{ JS.push('js/app_config.js') }}
     {{ JS.push('js/console.js') }}
     {{ JS.push('js/lib/jquery.js') }}
+    {{ JS.push('js/lib/bootstrap.js') }}
+    {{ JS.render('js/widget-header.min.js') }}
+    
+    
 </head>
 <body>
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			<div>
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="#">Top</a></li>
+					{% for row in COPY.categories %}
+					<li><a href="#{{ row.slug }}">{{ row.category }}</a></li>
+					{% endfor %}
+			</div>
+		</div>
+	</nav>
+	
 	<h3>Viewing by topic</h3>
 		<p class="small">View by <a target="_self" href="date_embed.html">date</a> instead?</p>
-<h2>The Shooting</h2>
+
+<h2 class="topic" id="shooting">The Shooting</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'shooting' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.shooting %}
 <p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</p>
 {% endif %}
 {% endfor %}
+</div>
 
-<h2>The Setting</h2>
+<h2 class="topic" id="setting">The Setting</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'setting' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.setting %}
 <p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</p>
 {% endif %}
 {% endfor %}
 
-<h2>The Protests</h2>
+<h2 class="topic" id="protests">The Protests</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'protests' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.protests %}
 <p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</p>
 {% endif %}
 {% endfor %}
 
-<h2>The Police</h2>
+<h2 class="topic" id="police">The Police</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'police' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.police %}
 <p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</p>
 {% endif %}
 {% endfor %}
 
-<h2>The Law</h2>
+<h2 class="topic" id="law">The Law</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'law' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.law %}
 <p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</p>
 {% endif %}
 {% endfor %}
 
-<h2>More Deaths</h2>
+<h2 class="topic" id="deaths">More Deaths</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'deaths' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.more_deaths %}
 <p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</p>
 {% endif %}
 {% endfor %}
 
-<h2>Racial Divide</h2>
+<h2 class="topic" id="divide">Racial Divide</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'divide' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.racial_divide %}
 <p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</p>
 {% endif %}
 {% endfor %}
 
-<h2>The Politics</h2>
+<h2 class="topic" id="politics">The Politics</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'politics' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.the_politics %}
 <p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</p>
 {% endif %}
 {% endfor %}
 
-<h2>The Schools</h2>
+<h2 class="topic" id="schools">The Schools</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'schools' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.the_schools %}
 <p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</p>
 {% endif %}
 {% endfor %}
 
-<h2>The Arts</h2>
+<h2 class="topic" id="arts">The Arts</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'arts' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.the_arts %}
 <p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</p>
 {% endif %}
 {% endfor %}
 
-<h2>The Region</h2>
+<h2 class="topic" id="region">The Region</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'region' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.the_region %}
 <p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</p>
 {% endif %}
 {% endfor %}
 
+<script type="text/javascript">
+$('body').scrollspy({ target: '.navbar'})
+</script>
 </body>
 </html>

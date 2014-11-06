@@ -1,7 +1,13 @@
 // widget-specific css
-
+@import "less/lib/bootstrap/bootstrap";
+@import "less/lib/font-awesome/font-awesome";
 @import "less/typography";
 @import "less/variables";
+
+body {
+	position: relative;
+	padding-top: 65px;
+}
 
 a {
 	&:link {
@@ -16,4 +22,17 @@ a {
 
 .date {
 	color: #666;
+}
+
+.topic {
+	padding-top: 65px;
+	margin-top: -65px;
+}
+
+nav li {
+	font-size: .7em;
+}
+
+.navbar-nav li a {
+		padding: 5px
 }
