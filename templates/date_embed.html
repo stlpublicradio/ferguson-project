@@ -26,7 +26,7 @@
 		</div>
 	</nav>
 	
-	<h3>Viewing by date</h3>
+	<h3>Viewing by date <small>Last updated on {{ COPY.content.stories_updated }}</small></h3>
 		<p class="small">View by <a target="_self" href="topic_embed.html">topic</a> instead?</p>
 {% for yeargroup in COPY.stories|groupby('year') %}
 {% for monthgroup in yeargroup.list|groupby('month') %}
