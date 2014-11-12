@@ -21,14 +21,12 @@
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-		<div class="container">
-			<div>
+		<div class="container" id="nav">
 				<ul class="nav navbar-nav">
-					<li class="active"><a href="#">Top</a></li>
 					{% for row in COPY.categories %}
-					<li><a href="#{{ row.slug }}">{{ row.category }}</a></li>
+					<li><a target="_self" href="#{{ row.slug }}">{{ row.category }}</a></li>
 					{% endfor %}
-			</div>
+					<li id="top"><a target="_self" href="#">Back to Top </a></li>
 		</div>
 	</nav>
 	
@@ -190,8 +188,6 @@
 {% endif %}
 {% endfor %}
 
-<script type="text/javascript">
-$('body').scrollspy({ target: '.navbar'})
-</script>
+
 </body>
 </html>
