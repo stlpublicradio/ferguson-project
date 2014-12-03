@@ -1,0 +1,745 @@
+{% extends '_base.html' %}
+
+{% block content %}
+    <style type="text/css">
+        /* base styles */
+        html { -webkit-text-size-adjust: none; }
+        body {
+            margin: 0;
+            padding: 0;
+	   	 	font-family: 'Titillium Web', sans-serif;
+            color: #333;
+        }
+		p {
+		    font-family: 'Titillium Web', sans-serif;
+			font-weight: 400;
+		}
+        h1 {
+            margin: 0 0 6px 0;
+			line-height: 1.2em;
+            font-size: 30px;
+            color: #333;
+		    font-family: 'Titillium Web', sans-serif;
+	    font-weight: 700;
+        }
+        h2 {
+            font-weight: normal;
+			line-height: 1.2em;
+			color: #666;
+            font-size: 20px;
+            margin: 0 0 5px 0;
+	    font-family: 'Titillium Web', sans-serif;
+	    font-weight: 400;
+        }
+        h3 {
+            font-weight: normal;
+            color: #666;
+            font-size: 16px;
+            margin: 0 0 22px 0;
+	    font-family: 'Titillium Web', sans-serif;
+	    font-weight: 200;
+        }
+	h4 {
+            margin: 2px 0 7px 0;
+            color: #666;
+            font-size: 16px;
+	    font-family: 'Titillium Web', sans-serif;
+	    font-weight: 200;
+        }
+		
+		.caption p,
+        .footnotes p,
+        .footer p {
+		    font-family: 'Titillium Web', sans-serif;
+			font-weight: 200;
+            margin: 2px 0 0 0;
+            font-size: 13px;
+            line-height: 1.3;
+            color: #202020;
+        }
+        a, a:link, a:visited {
+            color: #4774CC;
+            text-decoration: none;
+        }
+        a:hover, a:active { opacity: 0.7; }
+	
+	#map {
+	    position: relative;
+	    height: 400px;
+	    width: 100%;
+	    margin: 0 auto;
+	    padding: 0;
+	}
+	
+	.key span {
+		padding: 5px;
+		margin: 5px;
+		font-size: .7em;
+	}
+	
+	p.key {
+		line-height: 1.8em;
+	}
+	
+	.red {
+		background-color: #cc203b;
+		font-weight:700;
+		color: #fff;
+	}
+	
+	.green {
+		background-color: rgba(68,153,112,.6);
+		font-weight:700;
+		color: #fff;
+	}
+	
+	.yellow {
+		background-color: rgba(241,187,79,.6);
+		font-weight:700;
+		color: #fff;
+	}
+	
+	.maroon {
+		background-color: rgba(140,27,82,.6);
+		font-weight:700;
+		color: #fff;
+	}
+	
+	.blue {
+		background-color: #006c8e;
+		font-weight:700;
+		color: #fff;
+	}
+	
+	.orange {
+		background-color: rgba(246,136,62,.6);
+		font-weight:700;
+		color: #fff;
+	}
+	
+	.tan {
+		background-color: rgba(165,165,133,.6);
+		font-weight:700;
+		color: #fff;		
+	}
+
+	.marker-cluster {
+		background-clip: padding-box;
+		border-radius: 20px;
+		}
+	.marker-cluster div {
+		width: 30px;
+		height: 30px;
+		margin-left: 5px;
+		margin-top: 5px;
+
+		text-align: center;
+		border-radius: 15px;
+	}
+	.marker-cluster span {
+		line-height: 30px;
+		}
+		
+	.leaflet-cluster-anim .leaflet-marker-icon, .leaflet-cluster-anim .leaflet-marker-shadow {
+		-webkit-transition: -webkit-transform 0.3s ease-out, opacity 0.3s ease-in;
+		-moz-transition: -moz-transform 0.3s ease-out, opacity 0.3s ease-in;
+		-o-transition: -o-transform 0.3s ease-out, opacity 0.3s ease-in;
+		transition: transform 0.3s ease-out, opacity 0.3s ease-in;
+		}
+    </style>
+	<link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.css' rel='stylesheet' />
+	<script src="js/lib/leaflet-0.7.2/leaflet.js" type="text/javascript"></script>
+	<script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js'></script>
+</head>
+<body>
+    {% if COPY.map_content.title %}<h1>{{ COPY.map_content.title }}</h1>{% endif %}
+    {% if COPY.map_content.intro %}<p>{{ COPY.map_content.intro }}</p>{% endif %}
+        {% if COPY.map_content.key %}<p class="key">{{ COPY.map_content.key }}</p>{% endif %}
+
+<div id="map"></div>
+
+        {% if COPY.map_content.source %}<div class="caption"><p>{{ COPY.map_content.source }}</p></div>{% endif %}
+
+        {% if COPY.map_content.edits %}<div class="footnote"><p>{{ COPY.map_content.edits }}</p></div>{% endif %}
+		
+<script type="text/javascript" src="js/stl.js"></script>
+<script type="text/javascript" src="js/leaflet.markercluster.js"></script>
+
+<script type="text/javascript">
+var data={
+    "type": "FeatureCollection",
+    "features": [
+        {% for row in COPY.map %}
+			{
+            "type": "Feature",
+            "properties": {
+                "place": "{{ row.place }}",
+                "type": "{{ row.type }}",
+		"address": "{{ row.address }}",
+		"notes": "{{ row.note }}",
+		"layer": "{{ row.layer }}"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    {{ row.lng }},{{ row.lat }}
+                ]
+            }
+        },
+		{% endfor %}
+	    ]
+};
+
+var northEast = L.latLng(38.90, -90.0),
+    southWest = L.latLng(38.40, -90.42),
+    bounds = L.latLngBounds(southWest, northEast);
+
+var map = L.map('map', {scrollWheelZoom: false, attribution: ''}).setView([38.710258 , -90.279808], 11).setMaxBounds(bounds);
+
+var tiles = L.mapbox.tileLayer('stlpr.hi06d4b5')
+    .addTo(map);
+
+L.geoJson(stl, {
+	style: {
+		weight: 1,
+		color: "#eee",
+		fillColor: "#eee",
+		opacity: 0.8,
+		fillOpacity: 0.1
+	}
+}).addTo(map);
+
+function onEachFeature(feature, layer) {
+	layer.on({
+		click: popUp
+	});
+}
+
+function popUp(e) {
+	var layer = e.target;
+	layer.bindPopup("<h1>" + layer.feature.properties.place + "</h1><p>" + layer.feature.properties.address + "</p><p>" + layer.feature.properties.notes + "</p>");
+}
+
+var geojsonMarkerOptions = {
+	radius: 4,
+	fillColor: "#cc203b",
+	color: "#aaa",
+	weight: 2,
+	fillOpacity: 1
+}
+
+function styleFeature(feature) {
+	if (feature.properties.type == 'shooting') {
+	return{radius: 8,fillColor: "#cc203b"}
+	}
+            switch (feature.properties.type) {
+                case 'govt': return {fillColor: "#006c8e"};
+                case 'other_police_shooting': return {fillColor: "#cc203b"};
+		case 'arrest': return {fillColor: "#a5a585"};
+		case 'fire': return{fillColor: "#f6883e"};
+		case 'street_closure': return{fillColor: "#f1bb4f"}
+		case 'protest': return{fillColor: "#449970"}
+		case 'other': return{fillColor: "#8c1b52"}
+	}
+}
+
+var landmarks_layer = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Landmarks"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var monday_arrests = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Monday" && feature.properties.type == "arrest"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var monday_other = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Monday" && feature.properties.type == "other"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var monday_fires = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Monday" && feature.properties.type == "fire"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var monday_closures = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Monday" && feature.properties.type == "street_closure"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var monday_protests = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Monday" && feature.properties.type == "protest"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var tuesday_arrests = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Tuesday" && feature.properties.type == "arrest"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var tuesday_other = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Tuesday" && feature.properties.type == "other"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var tuesday_fires = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Tuesday" && feature.properties.type == "fire"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var tuesday_closures = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Tuesday" && feature.properties.type == "street_closure"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var tuesday_protests = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Tuesday" && feature.properties.type == "protest"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var wednesday_arrests = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Wednesday" && feature.properties.type == "arrest"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var wednesday_other = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Wednesday" && feature.properties.type == "other"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var wednesday_fires = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Wednesday" && feature.properties.type == "fire"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var wednesday_closures = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Wednesday" && feature.properties.type == "street_closure"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var wednesday_protests = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Wednesday" && feature.properties.type == "protest"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var friday_arrests = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Friday" && feature.properties.type == "arrest"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var friday_other = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Friday" && feature.properties.type == "other"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var friday_fires = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Friday" && feature.properties.type == "fire"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var friday_closures = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Friday" && feature.properties.type == "street_closure"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var friday_protests = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Friday" && feature.properties.type == "protest"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var sunday_arrests = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Sunday" && feature.properties.type == "arrest"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var sunday_other = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Sunday" && feature.properties.type == "other"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var sunday_fires = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Sunday" && feature.properties.type == "fire"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var sunday_closures = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Sunday" && feature.properties.type == "street_closure"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+var sunday_protests = L.geoJson(data, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+    filter: function(feature, layer) {
+    return feature.properties.layer == "Sunday" && feature.properties.type == "protest"
+    },
+    style: styleFeature,
+     onEachFeature: onEachFeature
+});
+
+
+
+map.addLayer(landmarks_layer);
+
+var mon_arrests_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="tan"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }
+});
+mon_arrests_group.addLayer(monday_arrests);
+
+var mon_fires_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="orange"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }	
+});
+mon_fires_group.addLayer(monday_fires);
+
+var mon_closures_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="yellow"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }	
+});
+mon_closures_group.addLayer(monday_closures);
+
+var mon_other_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="maroon"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }
+});
+mon_other_group.addLayer(monday_other);
+	
+var mon_protests_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="green"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }
+});
+mon_protests_group.addLayer(monday_protests);
+
+var monday_group = L.layerGroup([mon_arrests_group,mon_fires_group,mon_closures_group,mon_other_group,mon_protests_group]);
+map.addLayer(monday_group);
+
+var tue_arrests_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="tan"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }
+});
+tue_arrests_group.addLayer(tuesday_arrests);
+
+var tue_fires_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="orange"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }	
+});
+tue_fires_group.addLayer(tuesday_fires);
+
+var tue_closures_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="yellow"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }	
+});
+tue_closures_group.addLayer(tuesday_closures);
+
+var tue_other_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="maroon"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }
+});
+tue_other_group.addLayer(tuesday_other);
+		
+
+var tue_protests_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="green"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }
+});
+tue_protests_group.addLayer(tuesday_protests);
+
+var tuesday_group = L.layerGroup([tue_arrests_group,tue_fires_group,tue_closures_group,tue_other_group,tue_protests_group]);
+map.addLayer(tuesday_group);
+
+var wed_arrests_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="tan"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }
+});
+wed_arrests_group.addLayer(wednesday_arrests);
+
+var wed_fires_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="orange"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }	
+});
+wed_fires_group.addLayer(wednesday_fires);
+
+var wed_closures_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="yellow"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }	
+});
+wed_closures_group.addLayer(wednesday_closures);
+
+var wed_other_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="maroon"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }
+});
+wed_other_group.addLayer(wednesday_other);
+	
+var wed_protests_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="green"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }
+});
+wed_protests_group.addLayer(wednesday_protests);
+
+var wednesday_group = L.layerGroup([wed_arrests_group,wed_fires_group,wed_closures_group,wed_other_group,wed_protests_group]);
+map.addLayer(wednesday_group);
+
+var fri_arrests_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="tan"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }
+});
+fri_arrests_group.addLayer(friday_arrests);
+
+var fri_fires_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="orange"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }	
+});
+fri_fires_group.addLayer(friday_fires);
+
+var fri_closures_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="yellow"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }	
+});
+fri_closures_group.addLayer(friday_closures);
+
+var fri_other_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="maroon"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }
+});
+fri_other_group.addLayer(friday_other);
+	
+var fri_protests_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="green"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }
+});
+fri_protests_group.addLayer(friday_protests);
+
+var friday_group = L.layerGroup([fri_arrests_group,fri_fires_group,fri_closures_group,fri_other_group,fri_protests_group]);
+map.addLayer(friday_group);
+
+var sun_arrests_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="tan"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }
+});
+sun_arrests_group.addLayer(sunday_arrests);
+
+var sun_fires_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="orange"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }	
+});
+sun_fires_group.addLayer(sunday_fires);
+
+var sun_closures_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="yellow"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }	
+});
+sun_closures_group.addLayer(sunday_closures);
+
+var sun_other_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="maroon"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }
+});
+sun_other_group.addLayer(sunday_other);
+	
+var sun_protests_group = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return new L.DivIcon({ html: '<div class="green"><span>' + cluster.getChildCount() + '</span></div>', className: 'marker-cluster' });
+        }
+});
+sun_protests_group.addLayer(sunday_protests);
+
+var sunday_group = L.layerGroup([sun_arrests_group,sun_fires_group,sun_closures_group,sun_other_group,sun_protests_group]);
+map.addLayer(sunday_group);
+
+
+
+
+var overlay = {
+	"Landmarks": landmarks_layer,
+	"Monday, Nov. 24": monday_group,
+	"Tuesday, Nov. 25": tuesday_group,
+	"Wednesday, Nov. 26": wednesday_group,
+	"Friday, Nov. 28": friday_group,
+	"Sunday, Nov. 29": sunday_group
+	
+	
+}
+
+L.control.layers(null, overlay, {collapsed: false}).addTo(map);
+
+</script>
+
+{% endblock %}

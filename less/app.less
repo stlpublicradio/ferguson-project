@@ -70,3 +70,57 @@ header {
 	
 	}
 
+.listing a {
+	&:link {
+		text-decoration: none;
+		color: @stlpr-red;
+	}
+
+	&:visited {
+		color: lighten(@stlpr-red, 40%);
+	}
+}
+
+.listing .date {
+	color: #666;
+}
+
+.listing .topic {
+	padding-top: 65px;
+	margin-top: -65px;
+	margin-bottom: 0px;
+}
+
+.listing .navbar-nav li a {
+		padding: 0px 5px;
+		line-height: 2em;
+}
+
+.listing p.description {
+	font-weight: 700;
+	font-style: italic;
+	margin: 0em 0em 1em 0em;
+	color: #666;
+}
+
+.listing .nav {
+	font-size: 1em;
+	font-family: "Titillium Web", sans-serif;
+}
+
+.listing li#top {
+	font-weight: 700;
+}
+
+.listing .navbar {
+	min-height: 25px
+}
+
+.listing .date-menu {
+	position: relative;
+	top: -30px;
+}
+
+.alert-breaking{
+        .alert-variant(@alert-danger-bg; @alert-danger-border; @alert-danger-text);
+}

@@ -13,6 +13,8 @@ import issues
 import render
 import text
 import utils
+from datetime import datetime
+import json
 
 if app_config.DEPLOY_TO_SERVERS:
     import servers
@@ -171,7 +173,37 @@ def deploy(remote='origin'):
     render.render_all()
     _gzip('www', '.gzip')
     _deploy_to_s3()
+    
+    
+@task
+def reset_browsers():
+    """
+    Create a timestampped JSON file so the client will reset their page.
+    """
+    payload = {}
 
+    # get current time and convert to epoch time
+    now = datetime.now().strftime('%s')
+
+    # set everything you want in the json file
+    payload['timestamp'] = now
+
+    with open('www/live-data/timestamp.json', 'w') as f:
+        json.dump(now, f)
+
+    deploy_json('www/live-data/timestamp.json', 'ferguson-project/live-data/timestamp.json')
+
+def deploy_json(src, dst):
+    """
+    Deploy to S3. Note the cache headers.
+    """
+    bucket = 'apps.stlpublicradio.org'
+    region = 'us-east-1'
+
+    sync = 'aws s3 cp %s %s --acl "public-read" --cache-control "max-age=5 no-cache no-store must-revalidate" --region "%s"'
+
+    local(sync % (src, 's3://%s/%s' % (bucket, dst), region))
+    
 """
 Destruction
 

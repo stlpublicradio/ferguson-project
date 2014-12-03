@@ -1,112 +1,180 @@
 {% extends '_base.html' %}
 
 {% block content %}
-<h1>{{ COPY.content.project_name }}</h1>
 
-<div id="story-meta">
-    <p class="byline">by <span>{{ COPY.content.byline }}</span></p>
-    <p class="dateblock">
-        <span class="date">{{ COPY.content.pubdate }}</span>
-        <span class="time"> {{ COPY.content.pubtime }}</span>
-    </p>
-</div>
+<style type="text/css">
+body {
+	position: relative;
+	padding-top: 65px;
+	height: 100%;
+}
+</style>
+<div class="listing">
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container" id="nav">
+				<ul class="nav navbar-nav">
+					{% for row in COPY.categories %}
+					<li><a target="_self" href="#{{ row.slug }}">{{ row.category }}</a></li>
+					{% endfor %}
+					<li id="top"><a target="_self" href="#">Back to Top </a></li>
+		</div>
+	</nav>
+	
+	<h3>Viewing by topic <small>Last updated on {{ COPY.content.stories_updated }}</small></h3>
+		<p class="small">View by <a target="_self" href="date.html">date</a> instead?</p>
 
-<h2>Example COPY list</h2>
-<dl>
-    {% for row in COPY.example_list %}
-    <dt>{{ row.term }}</dt><dd>{{ row.definition }}</dd>
-    {% endfor %}
-</dl>
-
-<h2>JST example</h2>
-<p id="template-example"></p>
-
-<h2>The Shooting</h2>
+<hr>
+<h2 class="topic" id="shooting">The Shooting</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'shooting' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.shooting %}
-<p><a href="{{ row.url }}">{{ row.headline }}</a></p>
+<p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</span></p>
 {% endif %}
 {% endfor %}
 
-<h2>The Setting</h2>
+<hr>
+<h2 class="topic" id="setting">The Setting</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'setting' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.setting %}
-<p><a href="{{ row.url }}">{{ row.headline }}</a></p>
+<p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</span></p>
 {% endif %}
 {% endfor %}
 
-<h2>The Protests</h2>
+<hr>
+<h2 class="topic" id="protests">The Protests</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'protests' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.protests %}
-<p><a href="{{ row.url }}">{{ row.headline }}</a></p>
+<p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})<span></p>
 {% endif %}
 {% endfor %}
 
-<h2>The Police</h2>
+<hr>
+<h2 class="topic" id="police">The Police</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'police' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.police %}
-<p><a href="{{ row.url }}">{{ row.headline }}</a></p>
+<p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</span></p>
 {% endif %}
 {% endfor %}
 
-<h2>The Law</h2>
+<hr>
+<h2 class="topic" id="law">The Law</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'law' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.law %}
-<p><a href="{{ row.url }}">{{ row.headline }}</a></p>
+<p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</span></p>
 {% endif %}
 {% endfor %}
 
-<h2>More Deaths</h2>
+<hr>
+<h2 class="topic" id="deaths">More Deaths</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'deaths' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.more_deaths %}
-<p><a href="{{ row.url }}">{{ row.headline }}</a></p>
+<p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</span></p>
 {% endif %}
 {% endfor %}
 
-<h2>Racial Divide</h2>
+<hr>
+<h2 class="topic" id="divide">Racial Divide</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'divide' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.racial_divide %}
-<p><a href="{{ row.url }}">{{ row.headline }}</a></p>
+<p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</span></p>
 {% endif %}
 {% endfor %}
 
-<h2>The Politics</h2>
+<hr>
+<h2 class="topic" id="politics">The Politics</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'politics' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.the_politics %}
-<p><a href="{{ row.url }}">{{ row.headline }}</a></p>
+<p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</span></p>
 {% endif %}
 {% endfor %}
 
-<h2>The Schools</h2>
+<hr>
+<h2 class="topic" id="schools">The Schools</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'schools' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.the_schools %}
-<p><a href="{{ row.url }}">{{ row.headline }}</a></p>
+<p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</span></p>
 {% endif %}
 {% endfor %}
 
-<h2>The Arts</h2>
+<hr>
+<h2 class="topic" id="arts">The Arts</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'arts' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.the_arts %}
-<p><a href="{{ row.url }}">{{ row.headline }}</a></p>
+<p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</span></p>
 {% endif %}
 {% endfor %}
 
-<h2>The Region</h2>
+<hr>
+<h2 class="topic" id="region">The Region</h2>
+<p class="description">{% for row in COPY.categories %}
+	{% if row.slug in 'region' %}
+	{{ row.description }}
+	{% endif %}
+	{% endfor %}
+</p>
 {% for row in COPY.stories %}
 {% if row.the_region %}
-<p><a href="{{ row.url }}">{{ row.headline }}</a></p>
+<p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</span></p>
 {% endif %}
 {% endfor %}
-
-{% endblock %}
-
-{% block wide_content %}
-<div class="row">
-    <div class="col-md-12">
-        <h2>{{ COPY.content.footer_title }}</h2>
-        <p>{{ COPY.content.lorem_ipsum }}</p>
-    </div>
 </div>
 {% endblock %}
-
-{% include '_share_modal.html' %}

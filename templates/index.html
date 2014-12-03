@@ -1,15 +1,23 @@
 {% extends '_base.html' %}
 
 {% block content %}
-<h1>Ferguson Project</h1>
-
-<div id="story-meta">
-    <p class="byline">by <span>{{ COPY.content.byline }}</span></p>
-    <p class="dateblock">
-        <span class="date">{{ COPY.content.pubdate }}</span>
-        <span class="time"> {{ COPY.content.pubtime }}</span>
-    </p>
+<div class="jumbotron">
+<h2>Evidence released after grand jury refuses indictment</h2>
+<p>On August 9, 2014, Ferguson police officer Darren Wilson shot and killed Michael Brown, an unarmed black teenager.</p>
+<p>Eleven days later, a St. Louis County grand jury began hearing evidence on whether or not to charge Wilson with a crime for Brown’s death.</p>
+<p>On November 24, St. Louis County prosecutor Bob McCulloch announced that the nine white and three African-American members had decided that Wilson did not commit a crime when he killed Brown.</p>
+<p>As he promised from the beginning if there was no indictment, McCulloch has made the evidence available for public inspection, and St. Louis Public Radio now presents it to you. We hope it helps you answer two questions – what happened that August day, and why wasn’t Darren Wilson charged with a crime?</p>
+<p><a class="btn btn-primary btn-lg" href="evidence.html">See the evidence</a></p>
 </div>
+
+
+
+<h1>Ferguson Live Blog</h1>
+
+<p>This is where you can find the latest updates from our newsroom and reliable community sources on developments related to the fatal shooting of Michael Brown in Ferguson August 9.</p>
+
+<div class="scrbbl-embed" data-src="/event/766101/22187"></div>
+<script>(function(d, s, id) {var js,ijs=d.getElementsByTagName(s)[0];if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="//embed.scribblelive.com/widgets/embed.js";ijs.parentNode.insertBefore(js, ijs);}(document, 'script', 'scrbbl-js'));</script>
 
 
 {% endblock %}
