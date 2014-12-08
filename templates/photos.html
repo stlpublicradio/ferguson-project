@@ -1,0 +1,75 @@
+{% extends '_base.html' %}
+
+{% block extra_css %}
+<link href="css/ekko-lightbox.min.css" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block extra_foot %}
+<script type="text/javascript" src="js/lib/ekko-lightbox.min.js"></script>
+
+<script type="text/javascript">
+			$(document).ready(function ($) {
+
+				// delegate calls to data-toggle="lightbox"
+				$(document).delegate('*[data-toggle="lightbox"]:not([data-gallery="navigateTo"])', 'click', function(event) {
+					event.preventDefault();
+					return $(this).ekkoLightbox({
+						onShown: function() {
+							if (window.console) {
+								return console.log('Checking our the events huh?');
+							}
+						},
+						onNavigate: function(direction, itemIndex) {
+							if (window.console) {
+								return console.log('Navigating '+direction+'. Current item: '+itemIndex);
+							}
+						}
+					});
+				});
+
+				//Programatically call
+				$('#open-image').click(function (e) {
+					e.preventDefault();
+					$(this).ekkoLightbox();
+				});
+				$('#open-youtube').click(function (e) {
+					e.preventDefault();
+					$(this).ekkoLightbox();
+				});
+
+				$(document).delegate('*[data-gallery="navigateTo"]', 'click', function(event) {
+					event.preventDefault();
+					return $(this).ekkoLightbox({
+						onShown: function() {
+							var a = this.modal_content.find('.modal-footer a');
+							if(a.length > 0) {
+								a.click(function(e) {
+									e.preventDefault();
+									this.navigateTo(2);
+								}.bind(this));
+							}
+						}
+					});
+				});
+
+			});
+		</script>
+
+{% endblock %}
+
+{% block content %}
+
+
+<h1>Photo evidence released by McCulloch</h1>
+
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+<div id="gallery">
+	<a href="http://placehold.it/300x300" data-toggle="lightbox" data-gallery="multiimages"><img src="http://placehold.it/100x100"></a>
+	<a href="http://placehold.it/300x300" data-toggle="lightbox" data-gallery="multiimages"><img src="http://placehold.it/100x100"></a>
+	<a href="http://placehold.it/300x300" data-toggle="lightbox" data-gallery="multiimages"><img src="http://placehold.it/100x100"></a>
+	<a href="http://placehold.it/300x300" data-toggle="lightbox" data-gallery="multiimages"><img src="http://placehold.it/100x100"></a>
+	<a href="http://placehold.it/300x300" data-toggle="lightbox" data-gallery="multiimages"><img src="http://placehold.it/100x100"></a>
+	
+</div>
+{% endblock %}

@@ -92,6 +92,13 @@ def evidence_page():
     Example page displaying widget at different embed sizes.
     """
     return render_template('evidence.html', **make_context())
+    
+@app.route('/photos.html')
+def photos_page():
+    """
+    Example page displaying widget at different embed sizes.
+    """
+    return render_template('photos.html', **make_context())
 
 app.register_blueprint(static.static)
 
