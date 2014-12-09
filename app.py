@@ -99,6 +99,13 @@ def photos_page():
     Example page displaying widget at different embed sizes.
     """
     return render_template('photos.html', **make_context())
+    
+@app.route('/audio.html')
+def audio_page():
+    """
+    Example page displaying widget at different embed sizes.
+    """
+    return render_template('audio.html', **make_context())    
 
 app.register_blueprint(static.static)
 
