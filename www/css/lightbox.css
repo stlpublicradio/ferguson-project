@@ -41,6 +41,7 @@
 
 .ekko-lightbox a:hover {
   text-decoration: none;
+  color: #fff;
   opacity: 1;
 }
 
