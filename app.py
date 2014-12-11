@@ -106,6 +106,13 @@ def audio_page():
     Example page displaying widget at different embed sizes.
     """
     return render_template('audio.html', **make_context())    
+    
+@app.route('/liveblog.html')
+def liveblog_page():
+    """
+    Example page displaying widget at different embed sizes.
+    """
+    return render_template('liveblog.html', **make_context())        
 
 app.register_blueprint(static.static)
 
