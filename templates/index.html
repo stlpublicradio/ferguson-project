@@ -1,23 +1,32 @@
 {% extends '_base.html' %}
 
 {% block content %}
-<div class="jumbotron">
-<h2>New evidence released Dec. 8</h2>
-<p>On December 8, 2014, the St. Louis County prosecutor’s office made public additional evidence that was presented to the grand jury that ultimately decided not to charge former Ferguson police officer Darren Wilson with a crime for the shooting death of Michael Brown on August 9, 2014.</p> 
-<p>The evidence consists of eight statements made to federal investigators, radio traffic from the day of the shooting, the autopsy performed by the federal medical examiner, audio of the shooting captured by a user of the video chat service Glide, and the transcript of prosecutor Bob McCulloch’s speech from November 24, 2014, announcing the grand jury’s decision not to charge Wilson.</p>
-<p> 
-A spokesman for prosecutor Bob McCulloch told KSDK-TV that the evidence had been held back at the request of the federal government, which is conducting its own investigation into Brown’s death. It’s not immediately clear whether this is all the evidence the grand jury heard over 25 days.</p>
-<p><a class="btn btn-primary btn-lg" href="evidence.html">See the evidence</a></p>
+<div id="intro">
+	<h1>The Ferguson Project</h1>
+	<p>The issues that have come to the fore since Aug. 9, 2014, when Ferguson Police Officer Darren Wilson killed 18-year-old Michael Brown have been developing for decades. What actually happened on Canfield Drive will continue to be discussed, but attention is increasingly focused on community-police relations, racial profiling and racial and economic disparities and more. Here you’ll find our efforts to illuminate and explain the events that have happened and the wide-ranging conversation that is going on.</p>
 </div>
 
+<div id="index">
+	<div class="row">
+		<div class="col-sm-6">
+			<h1><a href="topic.html">All Our Coverage</a></h1>
+			<p>We have sorted all our articles since Aug. 10 by date and by topic. The page is updated at least twice a week.</p>
+		</div>
 
-
-<h1>Ferguson Live Blog</h1>
-
-<p>This is where you can find the latest updates from our newsroom and reliable community sources on developments related to the fatal shooting of Michael Brown in Ferguson August 9.</p>
-
-<div class="scrbbl-embed" data-src="/event/766101/22187"></div>
-<script>(function(d, s, id) {var js,ijs=d.getElementsByTagName(s)[0];if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="//embed.scribblelive.com/widgets/embed.js";ijs.parentNode.insertBefore(js, ijs);}(document, 'script', 'scrbbl-js'));</script>
-
-
+		<div class="col-sm-6">
+			<h1><a href="evidence.html">Grand Jury Evidence</a></h1>
+			<p>We've read thousands of pages of grand jury testimony transcripts and reports, heard police radio traffic and audio of the gunshots and viewed photos. Here, you can too.</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-6">
+			<h1><a href="map.html">Mapping the Area</a></h1>
+			<p>You can put the area in context by learning what happened where and when.</p>
+		</div>
+		<div class="col-sm-6">
+			<h1><a href="liveblog.html">Live Blog</a></h1>
+			<p>We've kept a live blog since August. Want to find out what's happening now? Here's where you should check.</p>
+		</div>
+	</div>
+</div>
 {% endblock %}
