@@ -21,11 +21,11 @@ body {
 	</nav>
 	
 	<h3>Viewing by date <small>Last updated on {{ COPY.content.stories_updated }}</small></h3>
-		<p class="small">View <a target="_self" href="date-oldest.html">oldest first</a>? View by <a target="_self" href="topic.html">topic</a> instead?</p>
-{% for yeargroup in COPY.stories|groupby('year')|reverse() %}
-{% for monthgroup in yeargroup.list|groupby('month')|reverse() %}
+		<p class="small">View <a target="_self" href="date.html">newest first</a>? View by <a target="_self" href="topic.html">topic</a> instead?</p>
+{% for yeargroup in COPY.stories|groupby('year') %}
+{% for monthgroup in yeargroup.list|groupby('month') %}
 <div class="date-menu" id="month-{{ monthgroup.grouper }}"></div>
-{% for daygroup in monthgroup.list|groupby('day')|reverse() %}
+{% for daygroup in monthgroup.list|groupby('day') %}
 <h2>{{ monthgroup.grouper }}/{{ daygroup.grouper }}</h2>
 {% for story in daygroup.list %}
 <p><a href="{{ story.url }}">{{ story.headline }}</a></p>

@@ -48,10 +48,16 @@ def date_page():
     """
     context = make_context()
 
-    with open('data/featured.json') as f:
-        context['featured'] = json.load(f)
-    
     return render_template('date.html', **context)
+
+@app.route('/date-oldest.html')
+def date_oldest_page():
+    """
+    Example page displaying widget at different embed sizes.
+    """
+    context = make_context()
+
+    return render_template('date-oldest.html', **context)
 
 @app.route('/topic.html')
 def topic_page():
