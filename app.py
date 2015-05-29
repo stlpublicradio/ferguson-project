@@ -1,21 +1,29 @@
 #!/usr/bin/env python
+"""
+Example application views.
 
-import json
-
-import argparse
-from flask import Flask, render_template
+Note that `render_template` is wrapped with `make_response` in all application
+routes. While not necessary for most Flask apps, it is required in the
+App Template for static publishing.
+"""
 
 import app_config
-from render_utils import make_context, smarty_filter, urlencode_filter
+import json
+import oauth
 import static
 
+from flask import Flask, make_response, render_template
+from render_utils import make_context, smarty_filter, urlencode_filter
+from werkzeug.debug import DebuggedApplication
+
 app = Flask(__name__)
+app.debug = app_config.DEBUG
 
-app.jinja_env.filters['smarty'] = smarty_filter
-app.jinja_env.filters['urlencode'] = urlencode_filter
+app.add_template_filter(smarty_filter, name='smarty')
+app.add_template_filter(urlencode_filter, name='urlencode')
 
-# Example application views
 @app.route('/')
+@oauth.oauth_required
 def index():
     """
     Example view demonstrating rendering a simple HTML page.
@@ -25,118 +33,31 @@ def index():
     with open('data/featured.json') as f:
         context['featured'] = json.load(f)
 
-    return render_template('index.html', **context)
+    return make_response(render_template('index.html', **context))
 
 @app.route('/widget.html')
 def widget():
     """
     Embeddable widget example page.
     """
-    return render_template('widget.html', **make_context())
+    return make_response(render_template('widget.html', **make_context()))
 
 @app.route('/test_widget.html')
 def test_widget():
     """
     Example page displaying widget at different embed sizes.
     """
-    return render_template('test_widget.html', **make_context())
-
-@app.route('/date.html')
-def date_page():
-    """
-    Example page displaying widget at different embed sizes.
-    """
-    context = make_context()
-
-    return render_template('date.html', **context)
-
-@app.route('/date-oldest.html')
-def date_oldest_page():
-    """
-    Example page displaying widget at different embed sizes.
-    """
-    context = make_context()
-
-    return render_template('date-oldest.html', **context)
-
-@app.route('/topic.html')
-def topic_page():
-    """
-    Example page displaying widget at different embed sizes.
-    """
-    context = make_context()
-
-    with open('data/featured.json') as f:
-        context['featured'] = json.load(f)
-    
-    return render_template('topic.html', **context)
-    
-@app.route('/date_embed.html')
-def date_embed_page():
-    """
-    Example page displaying widget at different embed sizes.
-    """
-    return render_template('date_embed.html', **make_context())
-    
-@app.route('/topic_embed.html')
-def topic_embed_page():
-    """
-    Example page displaying widget at different embed sizes.
-    """
-    return render_template('topic_embed.html', **make_context())
-    
-@app.route('/map.html')
-def map_page():
-    """
-    Example page displaying widget at different embed sizes.
-    """
-    return render_template('map.html', **make_context())
-    
-@app.route('/evidence.html')
-def evidence_page():
-    """
-    Example page displaying widget at different embed sizes.
-    """
-    return render_template('evidence.html', **make_context())
-    
-@app.route('/photos.html')
-def photos_page():
-    """
-    Example page displaying widget at different embed sizes.
-    """
-    return render_template('photos.html', **make_context())
-    
-@app.route('/audio.html')
-def audio_page():
-    """
-    Example page displaying widget at different embed sizes.
-    """
-    return render_template('audio.html', **make_context())    
-    
-@app.route('/liveblog.html')
-def liveblog_page():
-    """
-    Example page displaying widget at different embed sizes.
-    """
-    return render_template('liveblog.html', **make_context())     
-    
-@app.route('/beyondferguson.html')
-def liveblog_page():
-    """
-    Example page displaying widget at different embed sizes.
-    """
-    return render_template('beyondferguson.html', **make_context())            
+    return make_response(render_template('test_widget.html', **make_context()))
 
 app.register_blueprint(static.static)
+app.register_blueprint(oauth.oauth)
 
-# Boilerplate
+# Enable Werkzeug debug pages
+if app_config.DEBUG:
+    wsgi_app = DebuggedApplication(app, evalex=False)
+else:
+    wsgi_app = app
+
+# Catch attempts to run the app directly
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--port')
-    args = parser.parse_args()
-    server_port = 8000
-
-    if args.port:
-        server_port = int(args.port)
-
-    app.run(host='0.0.0.0', port=server_port, debug=app_config.DEBUG)
+    print 'This command has been removed! Please run "fab app" instead!'

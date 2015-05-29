@@ -9,12 +9,11 @@ import app_config
 # Other fabfiles
 import assets
 import data
+import flat
 import issues
 import render
 import text
 import utils
-from datetime import datetime
-import json
 
 if app_config.DEPLOY_TO_SERVERS:
     import servers
@@ -86,6 +85,23 @@ def branch(branch_name):
     """
     env.branch = branch_name
 
+"""
+Running the app
+"""
+@task
+def app(port='8000'):
+    """
+    Serve app.py.
+    """
+    local('gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload app:wsgi_app' % port)
+
+@task
+def public_app(port='8001'):
+    """
+    Serve public_app.py.
+    """
+    local('gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload public_app:wsgi_app' % port)
+
 @task
 def tests():
     """
@@ -100,39 +116,6 @@ Changes to deployment requires a full-stack test. Deployment
 has two primary functions: Pushing flat files to S3 and deploying
 code to a remote server if required.
 """
-def _deploy_to_s3(path='.gzip'):
-    """
-    Deploy the gzipped stuff to S3.
-    """
-    # Clear files that should never be deployed
-    local('rm -rf %s/live-data' % path)
-    local('rm -rf %s/sitemap.xml' % path)
-
-    exclude_flags = ''
-    include_flags = ''
-
-    with open('gzip_types.txt') as f:
-        for line in f:
-            exclude_flags += '--exclude "%s" ' % line.strip()
-            include_flags += '--include "%s" ' % line.strip()
-
-    exclude_flags += '--exclude "www/assets" '
-
-    sync = 'aws s3 sync %s/ %s --acl "public-read" ' + exclude_flags + ' --cache-control "max-age=5" --region "%s"'
-    sync_gzip = 'aws s3 sync %s/ %s --acl "public-read" --content-encoding "gzip" --exclude "*" ' + include_flags + ' --cache-control "max-age=5" --region "%s"'
-    sync_assets = 'aws s3 sync %s/ %s --acl "public-read" --cache-control "max-age=86400" --region "%s"'
-
-    for bucket in app_config.S3_BUCKETS:
-        local(sync % (path, 's3://%s/%s/' % (bucket['bucket_name'], app_config.PROJECT_SLUG), bucket['region']))
-        local(sync_gzip % (path, 's3://%s/%s/' % (bucket['bucket_name'], app_config.PROJECT_SLUG), bucket['region']))
-        local(sync_assets % ('www/assets/', 's3://%s/%s/assets/' % (bucket['bucket_name'], app_config.PROJECT_SLUG), bucket['region']))
-
-def _gzip(in_path='www', out_path='.gzip'):
-    """
-    Gzips everything in www and puts it all in gzip
-    """
-    local('python gzip_assets.py %s %s' % (in_path, out_path))
-
 @task
 def update():
     """
@@ -171,39 +154,28 @@ def deploy(remote='origin'):
 
     update()
     render.render_all()
-    _gzip('www', '.gzip')
-    _deploy_to_s3()
-    
-    
-@task
-def reset_browsers():
-    """
-    Create a timestampped JSON file so the client will reset their page.
-    """
-    payload = {}
 
-    # get current time and convert to epoch time
-    now = datetime.now().strftime('%s')
+    # Clear files that should never be deployed
+    local('rm -rf www/live-data')
 
-    # set everything you want in the json file
-    payload['timestamp'] = now
+    flat.deploy_folder(
+        'www',
+        app_config.PROJECT_SLUG,
+        headers={
+            'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
+        },
+        ignore=['www/assets/*', 'www/live-data/*']
+    )
 
-    with open('www/live-data/timestamp.json', 'w') as f:
-        json.dump(now, f)
+    flat.deploy_folder(
+        'www/assets',
+        '%s/assets' % app_config.PROJECT_SLUG,
+        headers={
+            'Cache-Control': 'max-age=%i' % app_config.ASSETS_MAX_AGE
+        }
+    )
 
-    deploy_json('www/live-data/timestamp.json', 'ferguson-project/live-data/timestamp.json')
 
-def deploy_json(src, dst):
-    """
-    Deploy to S3. Note the cache headers.
-    """
-    bucket = 'apps.stlpublicradio.org'
-    region = 'us-east-1'
-
-    sync = 'aws s3 cp %s %s --acl "public-read" --cache-control "max-age=5 no-cache no-store must-revalidate" --region "%s"'
-
-    local(sync % (src, 's3://%s/%s' % (bucket, dst), region))
-    
 """
 Destruction
 
@@ -224,10 +196,7 @@ def shiva_the_destroyer():
     )
 
     with settings(warn_only=True):
-        sync = 'aws s3 rm %s --recursive --region "%s"'
-
-        for bucket in app_config.S3_BUCKETS:
-            local(sync % ('s3://%s/%s/' % (bucket['bucket_name'], app_config.PROJECT_SLUG), bucket['region']))
+        flat.delete_folder(app_config.PROJECT_SLUG)
 
         if app_config.DEPLOY_TO_SERVERS:
             servers.delete_project()
