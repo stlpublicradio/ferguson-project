@@ -48,6 +48,149 @@ def test_widget():
     Example page displaying widget at different embed sizes.
     """
     return make_response(render_template('test_widget.html', **make_context()))
+    
+@app.route('/date.html')
+@oauth.oauth_required
+def date_page():
+    """
+    Example view demonstrating rendering a simple HTML page.
+    """
+    context = make_context()
+
+    with open('data/featured.json') as f:
+        context['featured'] = json.load(f)
+
+    return make_response(render_template('date.html', **context))
+    
+@app.route('/date-oldest.html')
+@oauth.oauth_required
+def date_oldest_page():
+    """
+    Example view demonstrating rendering a simple HTML page.
+    """
+    context = make_context()
+
+    with open('data/featured.json') as f:
+        context['featured'] = json.load(f)
+
+    return make_response(render_template('date-oldest.html', **context))
+    
+@app.route('/topic.html')
+@oauth.oauth_required
+def topic_page():
+    """
+    Example view demonstrating rendering a simple HTML page.
+    """
+    context = make_context()
+
+    with open('data/featured.json') as f:
+        context['featured'] = json.load(f)
+
+    return make_response(render_template('topic.html', **context))
+    
+@app.route('/date_embed.html')
+@oauth.oauth_required
+def date_embed_page():
+    """
+    Example view demonstrating rendering a simple HTML page.
+    """
+    context = make_context()
+
+    with open('data/featured.json') as f:
+        context['featured'] = json.load(f)
+
+    return make_response(render_template('date_embed.html', **context))
+    
+@app.route('/topic_embed.html')
+@oauth.oauth_required
+def topic_embed_page():
+    """
+    Example view demonstrating rendering a simple HTML page.
+    """
+    context = make_context()
+
+    with open('data/featured.json') as f:
+        context['featured'] = json.load(f)
+
+    return make_response(render_template('topic_embed.html', **context))
+    
+@app.route('/map.html')
+@oauth.oauth_required
+def map_page():
+    """
+    Example view demonstrating rendering a simple HTML page.
+    """
+    context = make_context()
+
+    with open('data/featured.json') as f:
+        context['featured'] = json.load(f)
+
+    return make_response(render_template('map.html', **context))
+    
+@app.route('/evidence.html')
+@oauth.oauth_required
+def evidence_page():
+    """
+    Example view demonstrating rendering a simple HTML page.
+    """
+    context = make_context()
+
+    with open('data/featured.json') as f:
+        context['featured'] = json.load(f)
+
+    return make_response(render_template('evidence.html', **context))
+    
+@app.route('/photos.html')
+@oauth.oauth_required
+def photos_page():
+    """
+    Example view demonstrating rendering a simple HTML page.
+    """
+    context = make_context()
+
+    with open('data/featured.json') as f:
+        context['featured'] = json.load(f)
+
+    return make_response(render_template('photos.html', **context))
+    
+@app.route('/audio.html')
+@oauth.oauth_required
+def audio_page():
+    """
+    Example view demonstrating rendering a simple HTML page.
+    """
+    context = make_context()
+
+    with open('data/featured.json') as f:
+        context['featured'] = json.load(f)
+
+    return make_response(render_template('audio.html', **context))
+    
+@app.route('/liveblog.html')
+@oauth.oauth_required
+def liveblog_page():
+    """
+    Example view demonstrating rendering a simple HTML page.
+    """
+    context = make_context()
+
+    with open('data/featured.json') as f:
+        context['featured'] = json.load(f)
+
+    return make_response(render_template('liveblog.html', **context))
+
+@app.route('/beyondferguson.html')
+@oauth.oauth_required
+def liveblog_page():
+    """
+    Example view demonstrating rendering a simple HTML page.
+    """
+    context = make_context()
+
+    with open('data/featured.json') as f:
+        context['featured'] = json.load(f)
+
+    return make_response(render_template('beyondferguson.html', **context))
 
 app.register_blueprint(static.static)
 app.register_blueprint(oauth.oauth)
