@@ -16,8 +16,8 @@
     {{ JS.push('js/lib/jquery.js') }}
     {{ JS.push('js/lib/bootstrap.js') }}
     {{ JS.render('js/widget-header.min.js') }}
-    
-    
+
+
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -29,12 +29,24 @@
 					<li id="top"><a target="_self" href="#">Back to Top </a></li>
 		</div>
 	</nav>
-	
+
 	<h3>Viewing by topic <small>Last updated on {{ COPY.content.stories_updated }}</small></h3>
 		<p class="small">View by <a target="_self" href="date_embed.html">date</a> instead?</p>
+    <hr>
+    <h2 class="topic" id="one_year_later">One Year Later</h2>
+    <p class="description">{% for row in COPY.categories %}
+    	{% if row.slug in 'one_year_later' %}
+    	{{ row.description }}
+    	{% endif %}
+    	{% endfor %}
+    </p>
+    {% for row in COPY.stories %}
+    {% if row.one_year_later %}
+    <p><a target="_parent" href="{{ row.url }}">{{ row.headline }}</a> <span class="small date">({{ row.month }}/{{ row.day }})</span></p>
+    {% endif %}
+    {% endfor %}
 
-<hr>
-<h2 class="topic" id="shooting">The Shooting</h2>
+    <hr><h2 class="topic" id="shooting">The Shooting</h2>
 <p class="description">{% for row in COPY.categories %}
 	{% if row.slug in 'shooting' %}
 	{{ row.description }}
