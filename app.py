@@ -181,7 +181,7 @@ def liveblog_page():
 
 @app.route('/beyondferguson.html')
 @oauth.oauth_required
-def liveblog_page():
+def beyond_ferguson():
     """
     Example view demonstrating rendering a simple HTML page.
     """
