@@ -12,19 +12,22 @@ body {
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container" id="nav">
 				<ul class="nav navbar-nav">
-					{% for row in COPY.months %}
+					{% for yeargroup in COPY.months|groupby('year') %}
+					<li><strong>{{ yeargroup.grouper}}:</strong></li>
+					{% for row in yeargroup.list %}
 					<li><a target="_self" href="#{{ row.slug }}">{{ row.month }}</a></li>
+					{% endfor %}
 					{% endfor %}
 					<li id="top"><a target="_self" href="#">Back to Top </a></li>
 				</ul>
 		</div>
 	</nav>
-	
+
 	<h3>Viewing by date <small>Last updated on {{ COPY.content.stories_updated }}</small></h3>
 		<p class="small">View <a target="_self" href="date-oldest.html">oldest first</a>? View by <a target="_self" href="topic.html">topic</a> instead?</p>
 {% for yeargroup in COPY.stories|groupby('year')|reverse() %}
 {% for monthgroup in yeargroup.list|groupby('month')|reverse() %}
-<div class="date-menu" id="month-{{ monthgroup.grouper }}"></div>
+<div class="date-menu" id="month-{{ yeargroup.grouper }}-{{ monthgroup.grouper }}"></div>
 {% for daygroup in monthgroup.list|groupby('day')|reverse() %}
 <h2>{{ monthgroup.grouper }}/{{ daygroup.grouper }}</h2>
 {% for story in daygroup.list %}
