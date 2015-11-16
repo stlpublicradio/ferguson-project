@@ -119,7 +119,7 @@ def delete_folder(dst):
     """
     Delete a folder from S3.
     """
-    s3 = boto.connect_s3()
+    s3 = boto.connect_s3(calling_format=OrdinaryCallingFormat())
 
     bucket = s3.get_bucket(app_config.S3_BUCKET['bucket_name'])
 
